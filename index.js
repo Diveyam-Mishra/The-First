@@ -5,7 +5,7 @@ import './Connection/database.js';
 dotenv.config();
 const app =express()
 const port=3000
-
+console.log(process.env)
 app.get('/', (req,res)=> {
     res.send('Diveyam')
 })
