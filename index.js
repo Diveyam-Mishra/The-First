@@ -1,14 +1,21 @@
 import dotenv from 'dotenv';
-import express from 'express';
-import './Connection/database.js';
+import connectDB from './Connection/database.js';
+import {app} from './app.js'
 
 dotenv.config();
-const app =express()
+
 const port=process.env.PORT || 8080
-console.log(process.env)
-app.get('/', (req,res)=> {
-    res.send('Diveyam')
+
+connectDB()
+.then(()=>{
+    app.listen(port,()=>{
+        console.log('Server running');
+    })
 })
-app.listen(port,()=>{
-    console.log('hello')
+.catch((err) => {
+    console.log("Mongo Error",err);
+})
+
+app.get('/',(req,res)=> {
+    res.send('Diveyam')
 })
