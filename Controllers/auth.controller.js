@@ -64,7 +64,8 @@ const registerUser= asyncHandler(async (req,res)=>{
         password,
         username: username.toLowerCase()
     })
-
+    console.log(user)
+    console.log(user.password)
     const createdUser = await User.findById(user._id).select(
         "-password -refreshToken"
     )
@@ -79,8 +80,10 @@ const registerUser= asyncHandler(async (req,res)=>{
 
 } )
 
-const loginUser= asyncHandler(async (req,res)=>{
+const loginUser = asyncHandler(async (req,res)=>{
+    console.log(req.body)
     const {email, username, password} = req.body
+    console.log(email)
     if (!(username || email)) {
         throw new ApiError(400, "username or email is required")
     }
@@ -92,11 +95,15 @@ const loginUser= asyncHandler(async (req,res)=>{
         $or: [{username}, {email}]
     })
     if (!user){
-        throw ApiError(404, "user not found")
+        throw new ApiError(404, "user not found")
     }
+    console.log("Stored password hash:", user.password);
+    console.log("Provided password:", password);
     const password_resp= await user.isPasswordCorrect(password)
-    if (!password){
-        throw ApiError(401, "passowrd is wrong")
+    
+    console.log("Password comparison result:", password_resp);
+    if (!password_resp){
+        throw new ApiError(401, "passowrd is wrong")
     }
     const {refreshToken,accessToken}= await generateAccessandRefreshToken(user._id)
     

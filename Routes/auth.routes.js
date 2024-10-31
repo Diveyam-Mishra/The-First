@@ -1,60 +1,10 @@
 import express from 'express';
 import {upload} from "../Middlewares/Multer.js"
-import {registerUser,loginUser} from "../Controllers/auth.controller.js"
+import {registerUser,loginUser,logoutUser,changeCurrentPassword,refreshAccessToken,getCurrentUser,updateUserDetails} from "../Controllers/auth.controller.js"
+import { verifyJWT } from '../Middlewares/auth.js';
+
 const router = express.Router();
-/**
- * @swagger
- * /register:
- * post:
- *     summary: Register a new user
- *     description: Registers a new user with required fields and optional cover image
- *     tags: [Users]
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               fullName:
- *                 type: string
- *                 required: true
- *                 description: Full name of the user
- *               avatar:
- *                 type: string
- *                 format: binary
- *                 required: true
- *                 description: Avatar image file
- *               coverImage:
- *                 type: string
- *                 format: binary
- *                 description: Cover image file (optional)
- *               email:
- *                 type: string
- *                 format: email
- *                 required: true
- *                 description: User's email address
- *               password:
- *                 type: string
- *                 format: password
- *                 required: true
- *                 description: User's password
- *               username:
- *                 type: string
- *                 required: true
- *                 description: User's username
- *             required:
- *               - fullName
- *               - avatar
- *               - email
- *               - password
- *               - username
- *     responses:
- *       '201':
- *         description: User created successfully
- *       '400':
- *         description: Bad request (invalid data)
- */
+
 router.route("/register").post(
     upload.fields([
         {
@@ -70,5 +20,10 @@ router.route("/register").post(
 )
 
 router.route("/login").post(loginUser)
+router.route("/logout").post(verifyJWT,  logoutUser)
+router.route("/refresh-token").post(refreshAccessToken)
+router.route("/change-password").post(verifyJWT, changeCurrentPassword)
+router.route("/current-user").get(verifyJWT, getCurrentUser)
+router.route("/update-account").patch(verifyJWT, updateUserDetails)
 
 export default router;

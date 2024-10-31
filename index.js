@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import connectDB from './Connection/database.js';
-import {app} from './app.js'
+import { app, server } from './app.js';
 
 dotenv.config();
 
@@ -8,7 +8,7 @@ const port=process.env.PORT || 8080
 
 connectDB()
 .then(()=>{
-    app.listen(port,()=>{
+    server.listen(port,()=>{
         console.log('Server running');
     })
 })

@@ -7,6 +7,7 @@ const blobServiceClient = BlobServiceClient.fromConnectionString(connectionStrin
 const containerClient = blobServiceClient.getContainerClient(process.env.AZURE_BLOB_CONTAINER_NAME);
 
 const uploadToAzureBlob = async (localFilePath) => {
+    console.log(process.env.AZURE_STORAGE_CONNECTION_STRING)
     try {
         if (!localFilePath) return null;
 
