@@ -32,8 +32,8 @@ const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024; // 10MB
   
 export const getOrCreatePersonalChat = asyncHandler(async (req, res) => {
-  const { recipientId } = req.body;
 
+  const { recipientId, content } = req.body;
   const recipient = await User.findById(recipientId);
   if (!recipient) {
     throw new ApiError(404, "User Not found")
@@ -104,13 +104,16 @@ export const getOrCreatePersonalChat = asyncHandler(async (req, res) => {
     chat.messages.push(message);
     await chat.save();
 
-    io.of('/chat').to(chat._id.toString()).emit('newMessage', {
-      ...message,
-      sender: {
-        _id: req.user._id,
-        name: req.user.name,
-        avatar: req.user.avatar
-      }
+    io.emit("new_message", {
+      // chatId: chat._id,
+      message: {
+                ...message,
+        sender: {
+          _id: req.user._id,
+          name: req.user.name,
+          avatar: req.user.avatar,
+        },
+      },
     });
   }
 
